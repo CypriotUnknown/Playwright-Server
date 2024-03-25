@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "target": "es2022",
+        "module": "ESNext",
+        "moduleResolution": "Node",
+        "rootDir": "ts",
+        "allowJs": true,
+        "checkJs": true,
+        "declaration": false,
+        "outDir": "js",
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "strict": true,
+        "skipLibCheck": true,
+    },
+    "exclude": [
+        "node_modules"
+    ],
+    "include": [
+        "ts/**/*"
+    ]
+}
