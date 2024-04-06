@@ -4,7 +4,7 @@ import axios, { AxiosError } from "axios";
 import { exit } from "process";
 import { config as setupENV } from 'dotenv';
 import { Workspaces } from "./models/workspace";
-import { inspect } from "util";
+import { Convert } from "./models/secret-response.js";
 
 export default class SecretsManager {
     private static theInstance: SecretsManager | null = null;
@@ -128,20 +128,21 @@ export default class SecretsManager {
 
         secretsEndpoint += `?${params.toString()}`
 
-        console.log(secretsEndpoint);
-
         const r = await axios.get(secretsEndpoint, {
             headers: this.authHeader
         });
 
-        console.log(r.data);
+        const infisicalResponseModel = Convert.toInfisicalSecretResponse(JSON.stringify(r.data))
+
+        return infisicalResponseModel.secret.secretValue;
 
     }
 
-    get serverConfiguration() {
+    async serverConfiguration() {
+        const headlessString = await this.getSecret("PLAYWRIGHT_HEADLESS").then(s => s.trim().toLowerCase())
         return {
-            headless: process.env["HEADLESS"] === "true" || process.env["HEADLESS"] === "TRUE",
-            port: parseInt(process.env["PORT"]!),
+            headless: headlessString === "true",
+            port: 9223,
             wsPath: "chromium-pw"
         }
     }

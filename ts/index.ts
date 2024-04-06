@@ -9,9 +9,10 @@ async function start() {
     await SecretsManager.instance.setupAccessTokens();
 
     try {
-        const r = await playwright.chromium.launchServer(SecretsManager.instance.serverConfiguration)
+        const serverConfig = await SecretsManager.instance.serverConfiguration()
+        const browserServer = await playwright.chromium.launchServer(serverConfig)
 
-        const browserURL = r.wsEndpoint().replace("localhost", localIp);
+        const browserURL = browserServer.wsEndpoint().replace("localhost", localIp);
         await SecretsManager.instance.updateBrowserURL(browserURL);
 
         console.log(`Started browser server at: ${browserURL}`);
