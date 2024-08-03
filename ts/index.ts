@@ -1,19 +1,24 @@
 import playwright from 'playwright'
-import SecretsManager from './secrets-manager.js'
 import { AxiosError } from 'axios';
 import os from 'os';
 import { exit } from 'process';
+import SecretsManager from 'infisical-secrets-manager';
+import getServerConfiguration from './server-config.js';
 
 async function start() {
     const localIp = getLocalIp()
-    await SecretsManager.instance.setupAccessTokens();
 
     try {
-        const serverConfig = await SecretsManager.instance.serverConfiguration()
-        const browserServer = await playwright.chromium.launchServer(serverConfig)
+        await SecretsManager.instance.configure({ defaultEnvironmentSlug: 'dev' });
+        const serverConfig = await getServerConfiguration();
+        const browserServer = await playwright.chromium.launchServer(serverConfig);
 
         const browserURL = browserServer.wsEndpoint().replace("localhost", localIp);
-        await SecretsManager.instance.updateBrowserURL(browserURL);
+        await SecretsManager.instance.updateSecret({
+            secretName: 'CHROME_URL',
+            secretValue: browserURL,
+            createIfNotFound: true
+        });
 
         console.log(`Started browser server at: ${browserURL}`);
     } catch (error) {
