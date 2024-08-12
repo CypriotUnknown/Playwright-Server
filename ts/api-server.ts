@@ -18,7 +18,7 @@ export default class APIServer {
             if (req.body?.url === undefined) return res.status(400).send('NO URL IN REQUEST BODY !');
 
             try {
-                const body = await this.playwrightServer.processURL(req.body.url);
+                const body = await this.playwrightServer.processURL(req.body);
                 return res.status(200).send(body);
             } catch (err) {
                 const error = (err as Error);
