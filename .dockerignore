@@ -5,3 +5,4 @@ README.md
 tsconfig.json
 .gitignore
 Dockerfile
+compose.yml

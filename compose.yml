@@ -1,0 +1,27 @@
+---
+services:
+  chromium:
+    container_name: playwright-server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 9223:9223
+      - 9999:9999
+    command: node js/index.js
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/healthy"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    pull_policy: always
+    environment:
+      - ENV_FILE_PATH=/run/secrets/env_file
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:ro
+    secrets:
+      - env_file
+secrets:
+  env_file:
+    file: .env

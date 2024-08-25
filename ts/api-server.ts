@@ -14,6 +14,7 @@ export default class APIServer {
 
     private setupServer() {
         this.app.use(json());
+        this.app.get("/healthy", (req, res) => res.send());
         this.app.post('/render', async (req, res) => {
             if (req.body?.url === undefined) return res.status(400).send('NO URL IN REQUEST BODY !');
 
